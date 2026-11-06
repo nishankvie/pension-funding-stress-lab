@@ -19,3 +19,17 @@ def validated(raw_employees):
 @pytest.fixture(scope="session")
 def valid_employees(validated):
     return validated[0]
+
+
+@pytest.fixture(scope="session")
+def pipeline_config():
+    from src.pension_lab.config import load_config
+    return load_config()
+
+
+@pytest.fixture(scope="session")
+def pipeline_results(raw_employees, pipeline_config):
+    from src.pension_lab.pipeline import run_pipeline
+    # Test status is given here, because a test run can't report on its own outcome
+    tests = {"status": "passed", "detail": "Given for this test.", "recorded": None}
+    return run_pipeline(raw_employees, pipeline_config, tests=tests)

@@ -134,6 +134,12 @@ economy:
     source: Raised from the brief's 1 point after comparing with ECB HICP inflation
     date: 2026-11-06
     reason: Near the calmer first half of the history, so the 2022 spike does not set the value. Fails the stability rule.
+  inflation_volatility_comparison:
+    value: 0.01
+    status: illustrative
+    source: Brief, Part 7.3
+    date: 2026-11-06
+    reason: The brief's starter value. A second run uses it to show how much this one setting matters.
   starting_spread:
     value: 0.01
     status: illustrative
@@ -360,4 +366,4 @@ attention:
     status: illustrative
     source: Modelling choice, set before any simulation results existed
     date: 2026-11-06
-    reason: A portfolio is listed if its chance of falling below the funding floor is at or above this.
+    reason: A portfolio is listed if its chance of falling below the funding floor at any year end is at or above this.
