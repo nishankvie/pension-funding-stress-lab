@@ -91,6 +91,13 @@ def test_shown_numbers_come_from_the_run(app, pipeline_results):
         assert f"{row['funding_level']:.1%}" in text
 
 
+def test_headline_metrics_equal_the_run(app, pipeline_results):
+    metrics = {metric.label: metric.value for metric in app.main.metric}
+    total = pipeline_results["reconciliation"]["total_dbo"]
+    assert metrics["Pension obligation (DBO)"] == f"EUR {total:,.0f}"
+    assert metrics["Duration"] == f"{pipeline_results['obligation_duration']:.1f} years"
+
+
 def test_row_counts_are_shown(app):
     metrics = {metric.label: metric.value for metric in app.main.metric}
     assert metrics["Raw rows"] == "43"
