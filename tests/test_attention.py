@@ -190,6 +190,14 @@ def test_no_item_uses_action_or_ranking_words(results, config):
     assert re.findall(BANNED, text) == []
 
 
+def test_stress_wording_cannot_be_read_as_good_news(results):
+    items = [item for item in results["attention"]["items"]
+             if item["source_section"] == "Stress tests"]
+    assert items
+    for item in items:
+        assert "pass" not in item["why_it_matters"].lower()
+
+
 def test_no_hard_coded_example_results(results, config):
     summary = results["summary"].copy()
     summary["chance_below_floor_any_time"] = 0.7777

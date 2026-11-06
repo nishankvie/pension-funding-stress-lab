@@ -118,7 +118,7 @@ def stress_items(results, floor):
         items.append(make_item(
             "Funding and stress",
             f"{stress_label} takes funding below {floor:.0%}: {portfolios}",
-            "This hypothetical shock opens a gap large enough to pass the funding check.",
+            "This hypothetical shock takes funding below the floor.",
             funding,
             "Review whether the size of this hypothetical shock suits the plan.",
             "Stress tests",

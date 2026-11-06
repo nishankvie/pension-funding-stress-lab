@@ -64,7 +64,9 @@ def settings_panel(defaults):
     simulation = values(defaults, "simulation")
     with st.sidebar:
         st.subheader("Settings")
-        st.caption("All values are illustrative. Changing one reruns the model.")
+        st.caption("All values are illustrative. Changing one reruns the model. If the stability "
+                   "check fails, results moved by more than the limit between two runs, so treat "
+                   "them with more care or use more paths.")
         funding = st.number_input("Starting funding level", 0.5, 1.5,
                                   float(plan["starting_funding_level"]), 0.05, format="%.2f")
         horizon = st.number_input("Simulation years", 1, 30, simulation["horizon_years"], 1)

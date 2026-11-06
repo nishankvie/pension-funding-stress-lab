@@ -158,6 +158,10 @@ def test_employee_trace_defaults_to_a_known_result_and_can_change(app):
     assert "€63,742" not in page_text(changed)
 
 
+def test_settings_explain_a_failed_stability_check(app):
+    assert "stability check fails" in app.sidebar.caption[0].value
+
+
 def test_changing_a_setting_reruns_the_model():
     changed = AppTest.from_file(APP_FILE, default_timeout=180).run()
     before = changed.main.info[0].value
