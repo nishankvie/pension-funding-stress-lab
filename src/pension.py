@@ -200,7 +200,14 @@ def validate_employees(raw_df, valuation_date=VALUATION_DATE):
         birth = df.loc[row, "birth_date"]
         entry = df.loc[row, "entry_date"]
 
-        if entry < birth:
+        # A missing date can't be compared, so it gets its own question and skips the date checks
+        if pd.isna(birth) or pd.isna(entry):
+            queries.append({
+                "employee_id": employee_id,
+                "issue": "missing date",
+                "question": "Birth date or entry date is missing; please provide both dates.",
+            })
+        elif entry < birth:
             queries.append({
                 "employee_id": employee_id,
                 "issue": "entry before birth",
@@ -216,24 +223,53 @@ def validate_employees(raw_df, valuation_date=VALUATION_DATE):
                             f"{age_in_years(birth, entry)}, below the minimum working age of "
                             f"{MIN_WORKING_AGE}; please confirm the entry date.",
             })
+        # Service after the valuation date would be negative, giving a negative liability
+        elif entry > valuation:
+            queries.append({
+                "employee_id": employee_id,
+                "issue": "entry after valuation date",
+                "question": f"Entry date {entry:%d.%m.%Y} is after the valuation date "
+                            f"{valuation:%d.%m.%Y}; please confirm the entry date.",
+            })
 
-        if pd.isna(df.loc[row, "monthly_salary_eur"]):
+        salary = df.loc[row, "monthly_salary_eur"]
+        if pd.isna(salary):
             queries.append({
                 "employee_id": employee_id,
                 "issue": "missing salary",
                 "question": "Monthly salary is missing; please provide the current gross "
                             "monthly salary.",
             })
-
-        age_now = age_in_years(birth, valuation)
-        if age_now >= RETIREMENT_AGE:
+        # The limits are illustrative: a value outside them is a question, not proof of an error
+        elif salary < MIN_SALARY_EUR or salary > MAX_SALARY_EUR:
             queries.append({
                 "employee_id": employee_id,
-                "issue": "age 65 or over",
-                "question": f"Employee is {age_now} at the valuation date, past the retirement "
-                            f"age of {RETIREMENT_AGE}; please confirm whether they are still "
-                            "working, already receiving a pension, or have left.",
+                "issue": "salary out of range",
+                "question": f"Monthly salary of {salary:,.2f} is outside the expected range of "
+                            f"{MIN_SALARY_EUR:,} to {MAX_SALARY_EUR:,}; please confirm it.",
             })
+
+        if pd.notna(birth):
+            age_now = age_in_years(birth, valuation)
+            if age_now >= RETIREMENT_AGE:
+                queries.append({
+                    "employee_id": employee_id,
+                    "issue": "age 65 or over",
+                    "question": f"Employee is {age_now} at the valuation date, past the retirement "
+                                f"age of {RETIREMENT_AGE}; please confirm whether they are still "
+                                "working, already receiving a pension, or have left.",
+                })
+
+    # Exact copies are already gone, so a repeated ID here means two different records for one
+    # person. Keeping both would double their liability, and picking one would be a guess
+    repeated_ids = df.loc[df["employee_id"].duplicated(keep=False), "employee_id"].unique()
+    for employee_id in repeated_ids:
+        queries.append({
+            "employee_id": employee_id,
+            "issue": "conflicting records",
+            "question": "This employee ID appears on more than one row with different values; "
+                        "please confirm which record is correct.",
+        })
 
     query_df = pd.DataFrame(queries, columns=["employee_id", "issue", "question"])
 
@@ -241,7 +277,10 @@ def validate_employees(raw_df, valuation_date=VALUATION_DATE):
     valid = df[~df["employee_id"].isin(query_df["employee_id"])].reset_index(drop=True)
 
     # log_change was written for the portfolio, so rename its columns for employees
-    log_df = pd.DataFrame(log).rename(columns={"company_id": "employee_id"}).drop(columns="month")
+    # Naming the columns keeps this working when a clean file produces an empty log
+    log_columns = ["company_id", "month", "column", "issue", "old_value", "new_value"]
+    log_df = pd.DataFrame(log, columns=log_columns)
+    log_df = log_df.rename(columns={"company_id": "employee_id"}).drop(columns="month")
 
     return valid, log_df, query_df
 
