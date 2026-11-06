@@ -275,15 +275,15 @@ stresses:
   inflation_up:
     value: {label: Inflation up 1 point for 5 years, inflation_shift: 0.01, inflation_years: 5}
     status: illustrative
-    source: Brief, Part 7.6
+    source: Brief, Parts 7.4 and 7.6
     date: 2026-11-06
-    reason: Hypothetical. Not a historical replica or a forecast.
+    reason: Hypothetical. Extra inflation lifts salaries only until each person retires. Asset prices are held unchanged.
   longer_lives:
     value: {label: People live longer, mortality_factor: 0.90}
     status: illustrative
     source: Brief, Part 7.6
     date: 2026-11-06
-    reason: Hypothetical. Not a historical replica or a forecast.
+    reason: Hypothetical, applied at once. Not a historical replica or a forecast.
   equity_fall:
     value: {label: Equities down 30% and spreads up 1 point, equity_shock: -0.30, spread_shift: 0.01}
     status: illustrative
