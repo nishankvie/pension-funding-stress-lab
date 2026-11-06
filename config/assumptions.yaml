@@ -158,6 +158,12 @@ economy:
     source: Brief, Part 7.3
     date: 2026-11-06
     reason: No suitable free public series was found.
+  spread_floor:
+    value: 0.0
+    status: illustrative
+    source: Modelling choice
+    date: 2026-11-06
+    reason: A corporate bond should not yield less than a government bond, so the spread cannot fall below this.
   equity_expected_return:
     value: 0.06
     status: illustrative
