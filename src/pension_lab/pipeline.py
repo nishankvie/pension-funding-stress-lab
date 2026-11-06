@@ -5,6 +5,7 @@ import copy
 import numpy as np
 
 from src.pension import duration, sensitivity_table, validate_employees
+from src.pension_lab.attention import build_attention
 from src.pension_lab.cashflows import (
     employee_payment_table,
     present_value,
@@ -163,7 +164,7 @@ def run_pipeline(raw_df, config, source_name="sample employees", tests=None):
         automated_tests_check(tests),
     ]
 
-    return {
+    results = {
         "source_name": source_name,
         "raw": raw_df,
         "valid": valid,
@@ -185,3 +186,5 @@ def run_pipeline(raw_df, config, source_name="sample employees", tests=None):
         "checks": checks,
         "tests": tests,
     }
+    results["attention"] = build_attention(results, config)
+    return results

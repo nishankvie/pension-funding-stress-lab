@@ -140,6 +140,28 @@ def simulation_section(results, config):
     )
 
 
+def attention_section(results):
+    """Return the attention list, its thresholds and anything that was not run."""
+    attention = results["attention"]
+    thresholds = attention["thresholds"]
+    html = (
+        "<h2>What needs attention</h2>"
+        f"<p>Illustrative checks: funding floor {thresholds['funding_floor']:.0%}; a portfolio is "
+        f"listed at a {thresholds['chance_below_floor_threshold']:.0%} chance or more of falling "
+        "below it at any year end. Items follow fixed groups, with no urgency score.</p>"
+    )
+    if attention["message"]:
+        html += f"<p>{escape(attention['message'])}</p>"
+    else:
+        rows = [(item["issue"], item["why_it_matters"], item["supporting_value"],
+                 item["next_step"], item["source_section"]) for item in attention["items"]]
+        html += html_table(["Issue", "Why it matters", "Supporting value", "Next step", "Section"],
+                           rows)
+    if attention["not_run"]:
+        html += f"<p>Not run: {escape(', '.join(attention['not_run']))}.</p>"
+    return html
+
+
 def assumptions_section(config):
     """Return every assumption with its label, source and reason."""
     rows = [(row["section"], row["name"], row["value"], row["status"], row["source"], row["reason"])
@@ -177,6 +199,7 @@ def build_report(results, config, record):
         payments_section(results),
         stress_section(results),
         simulation_section(results, config),
+        attention_section(results),
         assumptions_section(config),
         audit_section(results, record),
     ]

@@ -83,6 +83,7 @@ def run_record(results, config, run_time=None):
         "public_data_sources": load_sources(),
         "key_results": key_results(results),
         "model_checks": results["checks"],
+        "attention": results["attention"],
         "test_status": results["tests"],
     })
 
