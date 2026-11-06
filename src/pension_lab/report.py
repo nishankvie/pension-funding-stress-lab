@@ -3,6 +3,7 @@
 from html import escape
 
 from src.pension_lab.config import assumptions_table, values
+from src.pension_lab.market_data import SOURCE_CREDIT
 
 STYLE = """
 body { font-family: Georgia, serif; color: #1f2933; background: #ffffff; margin: 0 auto;
@@ -171,6 +172,8 @@ def assumptions_section(config):
         "<p>Main limits: synthetic employees, illustrative mortality rather than official tables, "
         "a closed plan with current employees only, one flat discount rate, no default losses on "
         "corporate bonds, and no reaction by the plan after a fall in funding.</p>"
+        f"<p>Public data: {escape(SOURCE_CREDIT)} The equity index belongs to its provider and "
+        "is not published here; only statistics calculated from it are shown.</p>"
         + html_table(["Section", "Name", "Value", "Status", "Source", "Reason"], rows)
     )
 

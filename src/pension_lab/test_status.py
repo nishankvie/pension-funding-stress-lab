@@ -16,10 +16,12 @@ FINGERPRINT_PATTERNS = ["pension_lab_app.py", "requirements.txt", "src/**/*.py",
 
 
 def code_fingerprint(root=PROJECT_ROOT):
-    """Return one hash covering the code, tests, assumptions and data."""
+    """Return one hash covering the code, tests, assumptions and published data."""
     paths = set()
     for pattern in FINGERPRINT_PATTERNS:
         paths.update(path for path in Path(root).glob(pattern) if path.is_file())
+    # This file isn't published, so including it would change the hash on any hosted copy
+    paths = {path for path in paths if path.name != "equity_index.csv"}
 
     digest = hashlib.sha256()
     for path in sorted(paths):

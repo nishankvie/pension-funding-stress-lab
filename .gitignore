@@ -6,3 +6,6 @@ venv/
 .DS_Store
 .streamlit/secrets.toml
 outputs/
+
+# Owned by STOXX: ECB reuse terms don't cover third-party data, so it stays local
+data/market/equity_index.csv

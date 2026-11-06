@@ -9,8 +9,14 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.pension_lab.economy import calibration_table
+
 MARKET_DIR = Path(__file__).parent.parent.parent / "data" / "market"
 SOURCES_FILE = MARKET_DIR / "sources.json"
+CALIBRATION_FILE = MARKET_DIR / "calibration.csv"
+SOURCE_CREDIT = "Source: ECB statistics."
+# The equity index belongs to its provider, so only statistics calculated from it are published
+LOCAL_ONLY_SERIES = {"equity_index"}
 ECB_API = "https://data-api.ecb.europa.eu/service/data"
 
 SERIES = {
@@ -99,6 +105,19 @@ def load_market_data():
     })
 
 
+def save_calibration():
+    """Recalculate the calibration from the local data and store the results."""
+    table = calibration_table(load_market_data())
+    table.to_csv(CALIBRATION_FILE, index=False)
+    return table
+
+
+def load_calibration():
+    """Return the stored calibration, which needs no raw index data."""
+    return pd.read_csv(CALIBRATION_FILE)
+
+
 if __name__ == "__main__":
     for name, record in download_all().items():
         print(f"{name:<14} {record['first_date']} to {record['last_date']}, {record['rows']} rows")
+    save_calibration()

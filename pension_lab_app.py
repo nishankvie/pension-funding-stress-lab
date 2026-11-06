@@ -16,8 +16,7 @@ from src.pension_lab.charts import (
     stress_chart,
 )
 from src.pension_lab.config import assumptions_table, load_config, values
-from src.pension_lab.economy import calibration_table
-from src.pension_lab.market_data import load_market_data, load_sources
+from src.pension_lab.market_data import SOURCE_CREDIT, load_calibration, load_sources
 from src.pension_lab.pipeline import run_pipeline
 from src.pension_lab.portfolios import build_portfolios, rate_sensitivity_covered
 from src.pension_lab.report import build_report, eur, main_finding, percent, points
@@ -57,12 +56,6 @@ def cached_results(funding, horizon, paths, contribution, cost):
     config = settings_with(load_config(), funding, horizon, paths, contribution, cost)
     raw = pd.read_csv(DATA_DIR / "employees_raw.csv")
     return config, run_pipeline(raw, config)
-
-
-@st.cache_data
-def cached_calibration():
-    """Return what history says about the parameters that can be measured."""
-    return calibration_table(load_market_data())
 
 
 def settings_panel(defaults):
@@ -140,6 +133,8 @@ def trust_box(results):
         )
         with st.expander("Public data used"):
             st.markdown("\n".join(f"- {line}" for line in lines))
+            st.caption(f"{SOURCE_CREDIT} The equity index belongs to its provider, so it is not "
+                       "published here. Only statistics calculated from it are shown.")
 
 
 def pipeline_map():
@@ -342,7 +337,7 @@ def assumptions_and_limits(results, config):
                 "Status": row["status"], "Source": row["source"], "Reason": row["reason"]}
                for row in rows])
     with st.expander("What history says"):
-        table(cached_calibration().round(4))
+        table(load_calibration().round(4))
     st.markdown(
         "**Main limits**\n"
         "- Illustrative mortality rather than official tables, and no employee turnover in the "

@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 import pandas as pd
 import pytest
 
+from conftest import hidden_words_in
 from src.pension_lab import audit
 from src.pension_lab.audit import data_hash, git_state, key_results, plain, run_record, save_run
 from src.pension_lab.pipeline import check_result, run_pipeline, automated_tests_check
@@ -225,6 +226,7 @@ def test_report_has_no_action_wording_or_branding(report):
     text = re.sub(r"<[^>]+>", " ", report).lower()
     banned = r"\b(buy|sell|switch|best|worst|recommend\w*)\b"
     assert re.findall(banned, text) == []
+    assert hidden_words_in(text) == []
 
 
 def test_report_escapes_data(pipeline_results, pipeline_config, record):

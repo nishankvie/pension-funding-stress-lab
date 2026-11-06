@@ -9,6 +9,7 @@ import pytest
 import streamlit as st
 from streamlit.testing.v1 import AppTest
 
+from conftest import hidden_words_in
 from src.pension_lab import pipeline
 from src.pension_lab.charts import (
     PORTFOLIO_COLORS,
@@ -129,6 +130,18 @@ def test_required_labels_are_visible(app):
 
 def test_no_action_wording_or_branding(app):
     assert re.findall(BANNED, page_text(app).lower()) == []
+    assert hidden_words_in(page_text(app)) == []
+
+
+def test_hidden_word_check_can_find_a_listed_word(monkeypatch):
+    # Adds a harmless word to the list, proving the check works without naming a real one
+    import hashlib
+
+    import conftest
+    extra = hashlib.sha256(b"placeholder").hexdigest()
+    monkeypatch.setattr(conftest, "HIDDEN_WORD_HASHES", conftest.HIDDEN_WORD_HASHES | {extra})
+    assert hidden_words_in("A placeholder word") == ["placeholder"]
+    assert hidden_words_in("Nothing listed here") == []
 
 
 def test_public_data_shows_source_and_date(app):

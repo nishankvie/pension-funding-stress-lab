@@ -16,13 +16,19 @@ from src.pension_lab.economy import (
     yearly_changes,
 )
 from src.pension_lab.market_data import (
+    LOCAL_ONLY_SERIES,
     MARKET_DIR,
     SERIES,
+    load_calibration,
     load_market_data,
     load_sources,
     month_end_values,
     parse_ecb_csv,
 )
+
+# A public copy has no raw index file, so tests that need it are skipped there and say so
+needs_local_data = pytest.mark.skipif(not (MARKET_DIR / "equity_index.csv").exists(),
+                                      reason="Raw index data is kept local")
 
 
 @pytest.fixture(scope="module")
@@ -31,8 +37,8 @@ def market():
 
 
 @pytest.fixture(scope="module")
-def calibration(market):
-    return calibration_table(market).set_index("parameter")
+def calibration():
+    return load_calibration().set_index("parameter")
 
 
 def test_every_series_records_source_date_and_unchanged_file():
@@ -41,8 +47,10 @@ def test_every_series_records_source_date_and_unchanged_file():
     for name, record in sources.items():
         assert record["url"].startswith("https://data-api.ecb.europa.eu/")
         assert record["download_date"]
-        content = (MARKET_DIR / f"{name}.csv").read_bytes()
-        assert hashlib.sha256(content).hexdigest() == record["sha256"]
+        path = MARKET_DIR / f"{name}.csv"
+        if name in LOCAL_ONLY_SERIES and not path.exists():
+            continue
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == record["sha256"]
 
 
 def test_parse_keeps_only_date_and_value():
@@ -59,6 +67,23 @@ def test_unfinished_month_is_left_out():
     assert monthly.tolist() == [3.1]
 
 
+@needs_local_data
+def test_stored_calibration_equals_a_fresh_calculation(market, calibration):
+    fresh = calibration_table(market).set_index("parameter")
+    pd.testing.assert_frame_equal(fresh, calibration, check_exact=False, rtol=1e-9)
+
+
+def test_raw_index_data_is_kept_out_of_git():
+    gitignore = (MARKET_DIR.parent.parent / ".gitignore").read_text()
+    assert "data/market/equity_index.csv" in gitignore
+
+
+def test_credit_line_uses_the_ecb_wording():
+    from src.pension_lab.market_data import SOURCE_CREDIT
+    assert SOURCE_CREDIT == "Source: ECB statistics."
+
+
+@needs_local_data
 def test_rates_are_decimals_not_percentages(market):
     assert market["rate"].abs().max() < 0.10
     assert market["inflation"].abs().max() < 0.20
@@ -92,6 +117,7 @@ def test_mean_reversion_recovers_a_known_process():
     assert estimate["long_run_level"] == pytest.approx(level, abs=1e-6)
 
 
+@needs_local_data
 def test_halves_cover_all_the_data_without_overlap(market):
     changes = yearly_changes(market)
     first, second = split_in_half(changes)
