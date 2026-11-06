@@ -171,6 +171,12 @@ def test_stability_table_covers_every_measure(book, config):
     assert table["difference"].ge(0).all()
 
 
+def test_stability_compares_two_genuinely_different_runs(book, config):
+    # A run compared with itself would always pass, so the check must see real differences
+    table = stability_table(book, config)
+    assert (table["difference"] > 0).all()
+
+
 def test_results_are_stable_between_path_counts(book, config):
     table = stability_table(book, config)
     assert table["within_limit"].all(), table[~table["within_limit"]].to_string()
