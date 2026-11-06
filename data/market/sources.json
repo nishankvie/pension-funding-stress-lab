@@ -1,0 +1,32 @@
+{
+  "yield_20y": {
+    "description": "Euro area AAA government bond yield curve, 20-year spot rate, % a year",
+    "publisher": "European Central Bank Data Portal",
+    "url": "https://data-api.ecb.europa.eu/service/data/YC/B.U2.EUR.4F.G_N_A.SV_C_YM.SR_20Y?format=csvdata&startPeriod=2004-09-01",
+    "download_date": "2026-11-06",
+    "first_date": "2004-09-06",
+    "last_date": "2026-11-05",
+    "rows": 5668,
+    "sha256": "3d2a8fbd4186749ca351a66673973e41fd5f64c5c8ae5ccd22d0939396dbdc9a"
+  },
+  "inflation": {
+    "description": "Euro area HICP inflation, annual rate of change, %",
+    "publisher": "European Central Bank Data Portal",
+    "url": "https://data-api.ecb.europa.eu/service/data/ICP/M.U2.N.000000.4.ANR?format=csvdata&startPeriod=1997-01",
+    "download_date": "2026-11-06",
+    "first_date": "1997-01",
+    "last_date": "2025-12",
+    "rows": 348,
+    "sha256": "202d19a9bc0d040a216935b748b87b4b2d3c0b620744bbaf88829e7d5c12d81d"
+  },
+  "equity_index": {
+    "description": "EURO STOXX 50 price index, monthly value, excludes dividends",
+    "publisher": "European Central Bank Data Portal",
+    "url": "https://data-api.ecb.europa.eu/service/data/FM/M.U2.EUR.DS.EI.DJES50I.HSTA?format=csvdata&startPeriod=2004-09",
+    "download_date": "2026-11-06",
+    "first_date": "2004-09",
+    "last_date": "2026-10",
+    "rows": 266,
+    "sha256": "278c83ed1765b12a582e506aa05bd56e4cafaf8da39a741f8c4fa4267685fbd6"
+  }
+}

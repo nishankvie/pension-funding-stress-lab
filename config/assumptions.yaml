@@ -1,0 +1,332 @@
+# Every assumption in the Pension Funding Stress Lab.
+# Each entry has a value, a status (estimated or illustrative), a source, a date and a reason.
+# "estimated" means the value comes from public data and passed the stability rule in
+# src/pension_lab/economy.py. Everything else is illustrative: chosen to show the method.
+
+pension:
+  discount_rate:
+    value: 0.035
+    status: illustrative
+    source: Earlier build; reasonableness checked against the ECB 20-year AAA government yield
+    date: 2026-11-06
+    reason: Kept so results reconcile to the earlier DBO. A real valuation would use high-quality corporate bonds.
+  salary_growth:
+    value: 0.025
+    status: illustrative
+    source: Earlier build
+    date: 2026-11-06
+    reason: Yearly salary rise until retirement. Not simulated; held fixed in every path.
+  retirement_age:
+    value: 65
+    status: illustrative
+    source: Plan design in the brief
+    date: 2026-11-06
+    reason: Fictional plan rule.
+  accrual_rate:
+    value: 0.01
+    status: illustrative
+    source: Plan design in the brief
+    date: 2026-11-06
+    reason: Fictional plan rule, 1% of final salary per year of service.
+  makeham_A:
+    value: 0.0002
+    status: illustrative
+    source: Earlier build
+    date: 2026-11-06
+    reason: Age-independent death risk. Stands in for official AVO 2018-P tables.
+  makeham_B:
+    value: 0.000035
+    status: illustrative
+    source: Earlier build
+    date: 2026-11-06
+    reason: Size of the age-related death risk. Stands in for official tables.
+  makeham_c:
+    value: 1.095
+    status: illustrative
+    source: Earlier build
+    date: 2026-11-06
+    reason: Yearly growth of the age-related death risk. Stands in for official tables.
+  mortality_factor:
+    value: 1.0
+    status: illustrative
+    source: Earlier build
+    date: 2026-11-06
+    reason: Base case scaling of death probabilities.
+  max_age:
+    value: 110
+    status: illustrative
+    source: Earlier build
+    date: 2026-11-06
+    reason: Nobody is assumed to live beyond this age.
+
+plan:
+  turnover_rate:
+    value: 0.0
+    status: illustrative
+    source: Brief, Part 7.2
+    date: 2026-11-06
+    reason: Off by default so the base case reconciles to the DBO.
+  leaver_benefit_share:
+    value: 0.0
+    status: illustrative
+    source: Modelling choice
+    date: 2026-11-06
+    reason: Only used if turnover is on. Zero shows the largest possible effect, not Austrian vesting rules.
+  indexation_rate:
+    value: 0.0
+    status: illustrative
+    source: Brief, Part 7.2
+    date: 2026-11-06
+    reason: Off by default so the base case reconciles to the DBO.
+  starting_funding_level:
+    value: 1.0
+    status: illustrative
+    source: Brief, Part 7.1
+    date: 2026-11-06
+    reason: Assets start equal to the obligation.
+  yearly_contribution_eur:
+    value: 0.0
+    status: illustrative
+    source: Brief, Part 7.1
+    date: 2026-11-06
+    reason: The plan is closed, and no contributions are assumed by default.
+
+economy:
+  long_run_rate:
+    value: 0.035
+    status: illustrative
+    source: Brief, Part 7.3
+    date: 2026-11-06
+    reason: History gives no stable long-run level, so this sits at the starting rate. It is above the average of the history.
+  rate_mean_reversion:
+    value: 0.10
+    status: illustrative
+    source: Brief, Part 7.3
+    date: 2026-11-06
+    reason: Estimates differ widely between the two halves of the history.
+  rate_volatility:
+    value: 0.0075
+    status: illustrative
+    source: Brief, Part 7.3; compared with ECB 20-year AAA yield
+    date: 2026-11-06
+    reason: Close to the full-history figure, but narrowly fails the stability rule.
+  starting_inflation:
+    value: 0.02
+    status: illustrative
+    source: Modelling choice
+    date: 2026-11-06
+    reason: Set to the long-run level so the base path has no inflation surprise.
+  long_run_inflation:
+    value: 0.02
+    status: illustrative
+    source: Brief, Part 7.3; compared with ECB HICP inflation
+    date: 2026-11-06
+    reason: In line with the historical average.
+  inflation_mean_reversion:
+    value: 0.30
+    status: illustrative
+    source: Brief, Part 7.3
+    date: 2026-11-06
+    reason: Estimates differ widely between the two halves of the history.
+  inflation_volatility:
+    value: 0.01
+    status: illustrative
+    source: Brief, Part 7.3; compared with ECB HICP inflation
+    date: 2026-11-06
+    reason: UNDER REVIEW. Below every historical measure, including the calmer first half.
+  starting_spread:
+    value: 0.01
+    status: illustrative
+    source: Modelling choice
+    date: 2026-11-06
+    reason: No suitable free public series was found for euro corporate bond spreads.
+  long_run_spread:
+    value: 0.01
+    status: illustrative
+    source: Modelling choice
+    date: 2026-11-06
+    reason: Set to the starting spread. No suitable free public series was found.
+  spread_mean_reversion:
+    value: 0.30
+    status: illustrative
+    source: Modelling choice
+    date: 2026-11-06
+    reason: Same speed as inflation. No suitable free public series was found.
+  spread_volatility:
+    value: 0.005
+    status: illustrative
+    source: Brief, Part 7.3
+    date: 2026-11-06
+    reason: No suitable free public series was found.
+  equity_expected_return:
+    value: 0.06
+    status: illustrative
+    source: Brief, Part 7.3
+    date: 2026-11-06
+    reason: Average simple yearly return. The free index excludes dividends, so it cannot estimate this.
+  equity_volatility:
+    value: 0.16
+    status: illustrative
+    source: Brief, Part 7.3; compared with the EURO STOXX 50
+    date: 2026-11-06
+    reason: The two halves of the history differ too much to estimate it.
+  mortality_factor_grid:
+    value: [0.90, 0.95, 1.00, 1.05, 1.10]
+    status: illustrative
+    source: Brief, Part 7.3
+    date: 2026-11-06
+    reason: Lasting mortality level, drawn once per path.
+  mortality_factor_probabilities:
+    value: [0.10, 0.20, 0.40, 0.20, 0.10]
+    status: illustrative
+    source: Modelling choice
+    date: 2026-11-06
+    reason: Centred on the base case, with an average factor of 1.00.
+
+correlations:
+  rate_inflation:
+    value: 0.30
+    status: illustrative
+    source: Brief, Part 7.3; compared with ECB data
+    date: 2026-11-06
+    reason: Close to the full-history figure, but the two halves disagree.
+  rate_equity:
+    value: 0.10
+    status: estimated
+    source: ECB 20-year AAA yield and EURO STOXX 50, 12-month changes, 2005 to 2025
+    date: 2026-11-06
+    reason: Passed the stability rule, so it replaces the starter value of 0.00.
+  rate_spread:
+    value: 0.0
+    status: illustrative
+    source: Modelling choice
+    date: 2026-11-06
+    reason: Neutral value. No suitable free public spread series was found.
+  inflation_equity:
+    value: 0.0
+    status: illustrative
+    source: Modelling choice; compared with ECB data
+    date: 2026-11-06
+    reason: Neutral value. The full-history figure is near zero and the halves have opposite signs.
+  inflation_spread:
+    value: 0.0
+    status: illustrative
+    source: Modelling choice
+    date: 2026-11-06
+    reason: Neutral value. No suitable free public spread series was found.
+  spread_equity:
+    value: -0.50
+    status: illustrative
+    source: Brief, Part 7.3
+    date: 2026-11-06
+    reason: No suitable free public spread series was found.
+
+portfolios:
+  a_short_bonds:
+    value: {government: 0.80, corporate: 0.20, equity: 0.00, bond_duration: 5}
+    status: illustrative
+    source: Brief, Part 7.5
+    date: 2026-11-06
+    reason: Describes a risk exposure only. Not a product.
+  b_long_bonds:
+    value: {government: 0.80, corporate: 0.20, equity: 0.00, bond_duration: obligation}
+    status: illustrative
+    source: Brief, Part 7.5
+    date: 2026-11-06
+    reason: Duration is set to the obligation's at run time. Longer than most ordinary bond mixes.
+  c_growth_mix:
+    value: {government: 0.20, corporate: 0.20, equity: 0.60, bond_duration: 6}
+    status: illustrative
+    source: Brief, Part 7.5, with the bond part split equally
+    date: 2026-11-06
+    reason: The brief gives 40% bonds in total, so the equal split is a modelling choice.
+  yearly_cost:
+    value: 0.002
+    status: illustrative
+    source: Modelling choice
+    date: 2026-11-06
+    reason: Simple yearly cost taken from the portfolio's return.
+
+stresses:
+  rates_down:
+    value: {label: Rates down 1 point, rate_shift: -0.01}
+    status: illustrative
+    source: Brief, Part 7.6
+    date: 2026-11-06
+    reason: Hypothetical, applied at once. Not a historical replica or a forecast.
+  rates_up:
+    value: {label: Rates up 1 point, rate_shift: 0.01}
+    status: illustrative
+    source: Brief, Part 7.6
+    date: 2026-11-06
+    reason: Hypothetical, applied at once. Not a historical replica or a forecast.
+  inflation_up:
+    value: {label: Inflation up 1 point for 5 years, inflation_shift: 0.01, inflation_years: 5}
+    status: illustrative
+    source: Brief, Part 7.6
+    date: 2026-11-06
+    reason: Hypothetical. Not a historical replica or a forecast.
+  longer_lives:
+    value: {label: People live longer, mortality_factor: 0.90}
+    status: illustrative
+    source: Brief, Part 7.6
+    date: 2026-11-06
+    reason: Hypothetical. Not a historical replica or a forecast.
+  equity_fall:
+    value: {label: Equities down 30% and spreads up 1 point, equity_shock: -0.30, spread_shift: 0.01}
+    status: illustrative
+    source: Brief, Part 7.6
+    date: 2026-11-06
+    reason: Hypothetical, applied at once. Not a historical replica or a forecast.
+  combined_bad_case:
+    value: {label: Combined bad case, rate_shift: -0.01, equity_shock: -0.30, spread_shift: 0.01, mortality_factor: 0.90}
+    status: illustrative
+    source: Brief, Part 7.6
+    date: 2026-11-06
+    reason: Hypothetical, applied at once. Not a historical replica or a forecast.
+
+simulation:
+  seed:
+    value: 42
+    status: illustrative
+    source: Brief, Part 7.7
+    date: 2026-11-06
+    reason: A fixed seed makes every run repeatable.
+  paths:
+    value: 5000
+    status: illustrative
+    source: Brief, Part 7.7
+    date: 2026-11-06
+    reason: Default number of simulated paths.
+  min_paths:
+    value: 1000
+    status: illustrative
+    source: Brief, Part 7.7
+    date: 2026-11-06
+    reason: Lowest number of paths the app allows.
+  max_paths:
+    value: 10000
+    status: illustrative
+    source: Brief, Part 7.7
+    date: 2026-11-06
+    reason: Highest number of paths the app allows.
+  horizon_years:
+    value: 10
+    status: illustrative
+    source: Brief, Part 7.1
+    date: 2026-11-06
+    reason: Default simulation length.
+
+attention:
+  funding_floor:
+    value: 0.90
+    status: illustrative
+    source: Brief, Parts 7.7 and 7.10
+    date: 2026-11-06
+    reason: Funding level the attention checks compare against.
+  chance_below_floor_threshold:
+    value: 0.25
+    status: illustrative
+    source: Modelling choice, set before any simulation results existed
+    date: 2026-11-06
+    reason: A portfolio is listed if its chance of falling below the funding floor is at or above this.
