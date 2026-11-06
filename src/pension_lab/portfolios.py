@@ -39,6 +39,12 @@ def build_portfolios(config, obligation_duration):
     return portfolios
 
 
+def rate_sensitivity_covered(portfolio, obligation_duration):
+    """Return the share of the obligation's rate sensitivity the portfolio's bonds cover."""
+    bonds = portfolio["government"] + portfolio["corporate"]
+    return bonds * portfolio["bond_duration"] / obligation_duration
+
+
 def bond_return(starting_yield, duration, convexity, yield_change):
     """Return a bond's yearly return: its income, plus the price effect of the yield change."""
     return starting_yield - duration * yield_change + 0.5 * convexity * yield_change ** 2
@@ -108,7 +114,6 @@ if __name__ == "__main__":
 
     for portfolio in build_portfolios(config, obligation_duration):
         d, c = portfolio["bond_duration"], portfolio["bond_convexity"]
-        bonds = portfolio["government"] + portfolio["corporate"]
 
         def one_year(rate_change):
             government = bond_return(rate, d, c, rate_change)
@@ -120,7 +125,7 @@ if __name__ == "__main__":
               f"corp {portfolio['corporate']:.0%}, equity {portfolio['equity']:.0%}, "
               f"bond duration {d:.2f}, convexity {c:.1f}")
         print(f"  share of obligation's rate sensitivity covered "
-              f"{bonds * d / obligation_duration:.0%}")
+              f"{rate_sensitivity_covered(portfolio, obligation_duration):.0%}")
         print(f"  one-year return: rates unchanged {one_year(0):+.2%}, "
               f"down 1 point {one_year(-0.01):+.2%}, up 1 point {one_year(0.01):+.2%}")
         turn = d / c

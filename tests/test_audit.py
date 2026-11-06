@@ -106,6 +106,17 @@ def test_fingerprint_changes_when_code_changes(tmp_path):
     assert code_fingerprint(root) != before
 
 
+def test_fingerprint_covers_the_app_and_requirements(tmp_path):
+    root = make_project(tmp_path)
+    (root / "pension_lab_app.py").write_text("a = 1\n")
+    (root / "requirements.txt").write_text("numpy\n")
+    before = code_fingerprint(root)
+    (root / "pension_lab_app.py").write_text("a = 2\n")
+    after_app = code_fingerprint(root)
+    (root / "requirements.txt").write_text("numpy==2\n")
+    assert len({before, after_app, code_fingerprint(root)}) == 3
+
+
 def test_recorded_pass_on_the_same_code_counts(tmp_path):
     root = make_project(tmp_path)
     status_file = root / "status.json"

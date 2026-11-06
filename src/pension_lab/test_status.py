@@ -10,8 +10,9 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 STATUS_FILE = PROJECT_ROOT / "config" / "test_status.json"
-FINGERPRINT_PATTERNS = ["src/**/*.py", "tests/**/*.py", "config/assumptions.yaml", "pytest.ini",
-                        "data/employees_raw.csv", "data/market/*"]
+FINGERPRINT_PATTERNS = ["pension_lab_app.py", "requirements.txt", "src/**/*.py", "tests/**/*.py",
+                        "config/assumptions.yaml", "pytest.ini", "data/employees_raw.csv",
+                        "data/market/*"]
 
 
 def code_fingerprint(root=PROJECT_ROOT):
