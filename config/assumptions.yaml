@@ -129,11 +129,11 @@ economy:
     date: 2026-11-06
     reason: Estimates differ widely between the two halves of the history.
   inflation_volatility:
-    value: 0.01
+    value: 0.015
     status: illustrative
-    source: Brief, Part 7.3; compared with ECB HICP inflation
+    source: Raised from the brief's 1 point after comparing with ECB HICP inflation
     date: 2026-11-06
-    reason: UNDER REVIEW. Below every historical measure, including the calmer first half.
+    reason: Near the calmer first half of the history, so the 2022 spike does not set the value. Fails the stability rule.
   starting_spread:
     value: 0.01
     status: illustrative
@@ -246,6 +246,18 @@ portfolios:
     source: Modelling choice
     date: 2026-11-06
     reason: Simple yearly cost taken from the portfolio's return.
+  convexity_method:
+    value: zero_coupon_equivalent
+    status: illustrative
+    source: Modelling choice
+    date: 2026-11-06
+    reason: Each bond holding is treated as one payment at a single date. This gives the lowest curvature for its duration.
+  equity_return_distribution:
+    value: lognormal
+    status: illustrative
+    source: Modelling choice
+    date: 2026-11-06
+    reason: Keeps the stated average and volatility exact, and a loss can never exceed 100%.
 
 stresses:
   rates_down:
